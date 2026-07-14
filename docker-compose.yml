@@ -2,25 +2,25 @@ version: '3.8'
 
 networks:
   monitoring:
-    driver: bridge
+    driver: bridge # use a bridge network
 
 services:
-  node-exporter:
+  node-exporter: # agent to scrape metrics from the host machine
     image: prom/node-exporter:latest
     container_name: node-exporter
-    restart: unless-stopped
+    restart: unless-stopped # restart the container if it stops or crashes
     volumes:
-      - /proc:/host/proc:ro
-      - /sys:/host/sys:ro
-      - /:/rootfs:ro
-    command:
+      - /proc:/host/proc:ro # mount the host's proc and sys directories to the container
+      - /sys:/host/sys:ro # mount the host's sys directories to the container
+      - /:/rootfs:ro # mount the host's root filesystem to the container
+    command: # run node-exporter with specific options, like the path to proc and sys directories 
       - '--path.procfs=/host/proc'
       - '--path.sysfs=/host/sys'
-      - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
+      - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)' # exclude certain filesystem mount points
     networks:
-      - monitoring
+      - monitoring # connect the node-exporter to the monitoring network defined previosly
     ports:
-      - "9100:9100"
+      - "9100:9100" # port mapping to the host's port 9100
 
   prometheus:
     image: prom/prometheus:latest
