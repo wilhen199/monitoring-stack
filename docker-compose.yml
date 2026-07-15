@@ -1,14 +1,21 @@
-version: '3.8'
-
 networks:
   monitoring:
     driver: bridge # use a bridge network
+
+volumes:
+  prometheus_data:
+  grafana_data:
 
 services:
   node-exporter: # agent to scrape metrics from the host machine
     image: prom/node-exporter:latest
     container_name: node-exporter
     restart: unless-stopped # restart the container if it stops or crashes
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:9100/metrics"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
     volumes:
       - /proc:/host/proc:ro # mount the host's proc and sys directories to the container
       - /sys:/host/sys:ro # mount the host's sys directories to the container
@@ -18,7 +25,7 @@ services:
       - '--path.sysfs=/host/sys'
       - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)' # exclude certain filesystem mount points
     networks:
-      - monitoring # connect the node-exporter to the monitoring network defined previosly
+      - monitoring # connect the node-exporter to the monitoring network defined previously
     ports:
       - "9100:9100" # port mapping to the host's port 9100
 
@@ -26,14 +33,23 @@ services:
     image: prom/prometheus:latest
     container_name: prometheus
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:9090/-/healthy"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
     volumes:
       - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
     networks:
       - monitoring
     ports:
       - "9090:9090"
+    depends_on:
+      node-exporter:
+        condition: service_healthy
 
   grafana:
     image: grafana/grafana:latest
@@ -41,7 +57,12 @@ services:
     restart: unless-stopped
     ports:
       - "3000:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning
+      - ./grafana/dashboards:/var/lib/grafana/dashboards
     networks:
       - monitoring
-    environment:
-      - GF_SECURITY_ADMIN_PASSWORD=admin
+    depends_on:
+      prometheus:
+        condition: service_healthy
