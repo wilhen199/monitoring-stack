@@ -1,5 +1,6 @@
 global:
   scrape_interval: 15s # how frequently to scrape metrics
+  evaluation_interval: 15s # how often to evaluate rules
 
 scrape_configs:
   - job_name: 'node-exporter'
