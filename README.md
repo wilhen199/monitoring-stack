@@ -13,7 +13,7 @@ A containerized monitoring solution using **Prometheus**, **Grafana**, and **Nod
 
 ![alt text](./screenshots/image2.png)
 
-```If you want to see images on full size, go to screenshots folder.```
+If you want to see images on full size, go to [screenshots](screenshots) folder.
 
 ## Overview
 
