@@ -20,10 +20,13 @@ services:
       - /proc:/host/proc:ro # mount the host's proc and sys directories to the container
       - /sys:/host/sys:ro # mount the host's sys directories to the container
       - /:/rootfs:ro # mount the host's root filesystem to the container
-    command: # run node-exporter with specific options, like the path to proc and sys directories 
+    command: # run node-exporter with specific options, like the path to proc and sys directories
       - '--path.procfs=/host/proc'
       - '--path.sysfs=/host/sys'
       - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)' # exclude certain filesystem mount points
+      - '--no-collector.systemd' # disable systemd collector (expensive)
+      - '--no-collector.processes' # disable processes collector (expensive)
+      - '--no-collector.ethtool' # disable ethtool collector (expensive)
     networks:
       - monitoring # connect the node-exporter to the monitoring network defined previously
     ports:
