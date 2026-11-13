@@ -636,7 +636,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "100 - (avg by (instance) (irate(windows_cpu_time_total{job=~\"$job\",mode=\"idle\"}[2m])) * 100)",
+          "expr": "100 - (avg by (instance) (irate(windows_cpu_time_seconds_total{job=~\"$job\",mode=\"idle\"}[2m])) * 100)",
           "format": "table",
           "instant": true,
           "interval": "",
@@ -816,7 +816,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "100 - (avg by (instance) (irate(windows_cpu_time_total{job=~\"$job\",mode=\"idle\"}[2m])) * 100)",
+          "expr": "100 - (avg by (instance) (irate(windows_cpu_time_seconds_total{job=~\"$job\",mode=\"idle\"}[2m])) * 100)",
           "hide": false,
           "interval": "",
           "intervalFactor": 1,
@@ -1739,7 +1739,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "100 - (avg(irate(windows_cpu_time_total{job=~\"$job\",instance=~\"$instance\",mode=\"idle\"}[2m])))*100",
+          "expr": "100 - (avg(irate(windows_cpu_time_seconds_total{job=~\"$job\",instance=~\"$instance\",mode=\"idle\"}[2m])))*100",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 1,
@@ -2494,7 +2494,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "100 - avg(irate(windows_cpu_time_total{job=~\"$job\",instance=~\"$instance\",mode=\"idle\"}[5m]))*100",
+          "expr": "100 - avg(irate(windows_cpu_time_seconds_total{job=~\"$job\",instance=~\"$instance\",mode=\"idle\"}[5m]))*100",
           "hide": false,
           "interval": "",
           "legendFormat": "CPU Utilization",
